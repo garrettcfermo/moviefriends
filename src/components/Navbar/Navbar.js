@@ -16,6 +16,9 @@ import AccountCircle from '@material-ui/icons/AccountCircle'
 import MailIcon from '@material-ui/icons/Mail'
 import NotificationsIcon from '@material-ui/icons/Notifications'
 import MoreIcon from '@material-ui/icons/MoreVert'
+import FavoriteRounded from '@material-ui/icons/FavoriteRounded'
+import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth'
+import firebase from 'firebase'
 
 
 const styles = theme => ({
@@ -126,7 +129,7 @@ class Navbar extends React.Component {
         onClose={this.handleMenuClose}
       >
         <MenuItem onClick={this.handleMenuClose}>Profile</MenuItem>
-        <MenuItem onClick={this.handleMenuClose}>My account</MenuItem>
+        <MenuItem onClick={this.handleMenuClose}>Sign Out</MenuItem>
       </Menu>
     )
 
@@ -141,7 +144,7 @@ class Navbar extends React.Component {
         <MenuItem>
           <IconButton color="inherit">
             <Badge badgeContent={4} color="secondary">
-              <MailIcon />
+              <FavoriteRounded />
             </Badge>
           </IconButton>
           <p>Messages</p>
@@ -165,7 +168,7 @@ class Navbar extends React.Component {
 
     return (
       <div className={classes.root}>
-        <AppBar style={{backgroundColor: '#B9090B'}} position="static">
+        <AppBar style={{ backgroundColor: '#B9090B' }} position="static">
           <Toolbar>
             <IconButton className={classes.menuButton} color="inherit" aria-label="Open drawer">
               <MenuIcon />
@@ -173,44 +176,51 @@ class Navbar extends React.Component {
             <Typography className={classes.title} variant="h6" color="inherit" noWrap>
               FLIX-SHARE
             </Typography>
-            <div className={classes.search}>
-              <div className={classes.searchIcon}>
-                <SearchIcon />
-              </div>
-              <InputBase
-                placeholder="Search…"
-                classes={{
-                  root: classes.inputRoot,
-                  input: classes.inputInput,
-                }}
-              />
-            </div>
-            <div className={classes.grow} />
-            <div className={classes.sectionDesktop}>
-              <IconButton color="inherit">
-                <Badge badgeContent={4} color="secondary">
-                  <MailIcon />
-                </Badge>
-              </IconButton>
-              <IconButton color="inherit">
-                <Badge badgeContent={17} color="secondary">
-                  <NotificationsIcon />
-                </Badge>
-              </IconButton>
-              <IconButton
-                aria-owns={isMenuOpen ? 'material-appbar' : undefined}
-                aria-haspopup="true"
-                onClick={this.handleProfileMenuOpen}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
-            </div>
-            <div className={classes.sectionMobile}>
-              <IconButton aria-haspopup="true" onClick={this.handleMobileMenuOpen} color="inherit">
-                <MoreIcon />
-              </IconButton>
-            </div>
+            {
+              this.props.isUser ? (
+                <>
+                  <div className={classes.search}>
+                    <div className={classes.searchIcon}>
+                      <SearchIcon />
+                    </div>
+                    <InputBase
+                      placeholder="Search…"
+                      classes={{
+                        root: classes.inputRoot,
+                        input: classes.inputInput,
+                      }}
+                    />
+                  </div>
+                  <div className={classes.grow} />
+                  <div className={classes.sectionDesktop}>
+                    <IconButton color="inherit">
+                      <FavoriteRounded />
+                    </IconButton>
+                    <IconButton color="inherit">
+                      <Badge badgeContent={17} color="secondary">
+                        <NotificationsIcon />
+                      </Badge>
+                    </IconButton>
+                    <IconButton
+                      aria-owns={isMenuOpen ? 'material-appbar' : undefined}
+                      aria-haspopup="true"
+                      onClick={this.handleProfileMenuOpen}
+                      color="inherit"
+                    >
+                      <AccountCircle />
+                    </IconButton>
+                  </div>
+                  <div className={classes.sectionMobile}>
+                    <IconButton aria-haspopup="true" onClick={this.handleMobileMenuOpen} color="inherit">
+                      <MoreIcon />
+                    </IconButton>
+                  </div>
+                </>
+              ) : (
+                  <StyledFirebaseAuth uiConfig={this.props.uiConfig} firebaseAuth={firebase.auth()} />
+                )
+            }
+
           </Toolbar>
         </AppBar>
         {renderMenu}
