@@ -13,12 +13,12 @@ import { withStyles } from '@material-ui/core/styles'
 import MenuIcon from '@material-ui/icons/Menu'
 import SearchIcon from '@material-ui/icons/Search'
 import AccountCircle from '@material-ui/icons/AccountCircle'
-import MailIcon from '@material-ui/icons/Mail'
 import NotificationsIcon from '@material-ui/icons/Notifications'
 import MoreIcon from '@material-ui/icons/MoreVert'
 import FavoriteRounded from '@material-ui/icons/FavoriteRounded'
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth'
 import firebase from 'firebase'
+import { Link } from 'react-router-dom'
 
 
 const styles = theme => ({
@@ -128,8 +128,13 @@ class Navbar extends React.Component {
         open={isMenuOpen}
         onClose={this.handleMenuClose}
       >
-        <MenuItem onClick={this.handleMenuClose}>Profile</MenuItem>
-        <MenuItem onClick={this.handleMenuClose}>Sign Out</MenuItem>
+        <Link to='/profile' style={{ color: 'white', textDecoration: 'none' }}>
+          <MenuItem onClick={this.handleMenuClose}>Profile</MenuItem>
+        </Link>
+        <MenuItem onClick={() => {
+          this.handleMenuClose()
+          firebase.auth().signOut()
+        }}>Sign Out</MenuItem>
       </Menu>
     )
 
@@ -173,33 +178,39 @@ class Navbar extends React.Component {
             <IconButton className={classes.menuButton} color="inherit" aria-label="Open drawer">
               <MenuIcon />
             </IconButton>
-            <Typography className={classes.title} variant="h6" color="inherit" noWrap>
-              FLIX-SHARE
+            <Link to="/" style={{ color: 'white', textDecoration: 'none' }}>
+              <Typography className={classes.title} variant="h6" color="inherit" noWrap>
+                FLIX-SHARE
             </Typography>
+            </Link>
             {
               this.props.isUser ? (
                 <>
-                  <div className={classes.search}>
-                    <div className={classes.searchIcon}>
-                      <SearchIcon />
+                  <form onSubmit={this.props.handleFormSubmit}>
+                    <div className={classes.search}>
+                      <div className={classes.searchIcon}>
+                        <SearchIcon />
+                      </div>
+                      <InputBase
+                        placeholder="Search…"
+                        classes={{
+                          root: classes.inputRoot,
+                          input: classes.inputInput,
+                        }}
+                        value={this.props.text}
+                        onChange={this.props.handleMovieInput}
+                      />
                     </div>
-                    <InputBase
-                      placeholder="Search…"
-                      classes={{
-                        root: classes.inputRoot,
-                        input: classes.inputInput,
-                      }}
-                    />
-                  </div>
+                  </form>
                   <div className={classes.grow} />
                   <div className={classes.sectionDesktop}>
+                    <Link to="/list" style={{ color: 'white', textDecoration: 'none' }}>
+                      <IconButton color="inherit">
+                        <FavoriteRounded />
+                      </IconButton>
+                    </Link>
                     <IconButton color="inherit">
-                      <FavoriteRounded />
-                    </IconButton>
-                    <IconButton color="inherit">
-                      <Badge badgeContent={17} color="secondary">
-                        <NotificationsIcon />
-                      </Badge>
+                      <NotificationsIcon />
                     </IconButton>
                     <IconButton
                       aria-owns={isMenuOpen ? 'material-appbar' : undefined}
